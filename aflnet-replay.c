@@ -110,11 +110,12 @@ int main(int argc, char* argv[])
       buf = (char *)ck_alloc(size);
       fread(buf, size, 1, fp);
       
-      if (net_recv(sockfd, timeout, 1, &response_buf, &response_buf_size)) break;
+      if (net_recv_simplified(sockfd, timeout, &response_buf, &response_buf_size)) break;
+      
       n = net_send(sockfd, timeout, buf,size);
       if (n != size) break;
 
-      if (net_recv(sockfd, timeout, 1, &response_buf, &response_buf_size)) break;
+      if (net_recv_simplified(sockfd, timeout, &response_buf, &response_buf_size)) break;
     }
   }
 

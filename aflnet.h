@@ -72,6 +72,7 @@ extern region_t* (*extract_requests)(unsigned char* buf, unsigned int buf_size, 
 // Two wrappers for sending and receiving data over socket
 int net_send(int sockfd, struct timeval timeout, char *mem, unsigned int len);
 int net_recv(int sockfd, struct timeval timeout, int poll_w, char **response_buf, unsigned int *len);
+int net_recv_simplified(int sockfd, struct timeval timeout, char **response_buf, unsigned int *len);
 
 // kl_messages manipulating functions
 

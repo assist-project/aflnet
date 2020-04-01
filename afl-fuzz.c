@@ -1056,7 +1056,7 @@ int send_over_network()
   }
   
   //retrieve early server response if needed
-  if (net_recv(sockfd, timeout, 1, &response_buf, &response_buf_size)) goto HANDLE_RESPONSES;  
+  if (net_recv_simplified(sockfd, timeout, &response_buf, &response_buf_size)) goto HANDLE_RESPONSES;  
 
   //write the request messages
   kliter_t(lms) *it;
@@ -1077,7 +1077,8 @@ int send_over_network()
 
     //retrieve server response
     u32 prev_buf_size = response_buf_size;
-    if (net_recv(sockfd, timeout, 1, &response_buf, &response_buf_size)) {
+    
+    if (net_recv_simplified(sockfd, timeout, &response_buf, &response_buf_size)) {
       goto HANDLE_RESPONSES;
     }
 
@@ -1089,7 +1090,7 @@ int send_over_network()
    
 HANDLE_RESPONSES:
 
-  net_recv(sockfd, timeout, 1, &response_buf, &response_buf_size);
+  net_recv_simplified(sockfd, timeout, &response_buf, &response_buf_size);
   
   //wait a bit letting the server to complete its remaing task(s)
   memset(session_virgin_bits, 255, MAP_SIZE);
