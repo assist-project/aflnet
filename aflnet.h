@@ -110,7 +110,10 @@ u8* state_sequence_to_string(unsigned int *stateSequence, unsigned int stateCoun
 /* Print the hexdump of a segment of a buffer preceded by a messsage */
 void hexdump(unsigned char *msg, unsigned char * buf, int start, int end);
 
-/* Reads a number of bytes from buf from offset into an unsigned int and returns it. May overflow*/
+/* Reads a number of bytes from buf from offset into an u32 integer and returns it. May overflow*/
 u32 read_bytes_to_uint32(unsigned char* buf, unsigned int offset, int num_bytes);
+
+/* Reads a number of bytes from buf from offset into an u16 integer and returns it. May overflow*/
+u16 read_bytes_to_uint16(unsigned char* buf, unsigned int offset, int num_bytes);
 
 #endif /* __AFLNET_H */

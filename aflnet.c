@@ -242,8 +242,10 @@ unsigned int* extract_response_codes_dtls12(unsigned char* buf, unsigned int buf
     // a DTLS 1.2 record has a 13 bytes header, followed by the contained message
     if ( (buf_size - byte_count > 13) &&
     (buf[byte_count] >= CCS_CONTENT_TYPE && buf[byte_count] <= HEARTBEAT_CONTENT_TYPE)  && 
-    (memcmp(&buf[byte_count+1], dtls12_version, 2) == 0)) {
+    (memcmp(buf+byte_count+1, dtls12_version, 2) == 0)) {
       unsigned char content_type = buf[byte_count];
+      // the epoch number is 2 bytes long, we only consider the least significant byte (since it is unlike) typically 
+      u16 epoch_num = read_bytes_to_uint16(buf, byte_count+3, 2); 
       unsigned char message_type;
       u32 record_length = read_bytes_to_uint32(buf, byte_count+11, 2);
       
@@ -330,7 +332,8 @@ unsigned int* extract_response_codes_dtls12(unsigned char* buf, unsigned int buf
         }
       }
 
-      status_code = (content_type << 8) + message_type;
+      // this will overflow on compilers with 2 byte integers
+      status_code = (epoch_num<<16) + (content_type << 8) + message_type;
       state_count++;
       state_sequence = (unsigned int *)ck_realloc(state_sequence, state_count * sizeof(unsigned int));
       state_sequence[state_count - 1] = status_code;
@@ -791,6 +794,14 @@ void hexdump(unsigned char *msg, unsigned char * buf, int start, int end) {
 
 u32 read_bytes_to_uint32(unsigned char* buf, unsigned int offset, int num_bytes) {
   u32 val = 0;
+  for (int i=0; i<num_bytes; i++) {
+    val = (val << 8) + buf[i+offset];
+  }
+  return val;
+}
+
+u16 read_bytes_to_uint16(unsigned char* buf, unsigned int offset, int num_bytes) {
+  u16 val = 0;
   for (int i=0; i<num_bytes; i++) {
     val = (val << 8) + buf[i+offset];
   }
